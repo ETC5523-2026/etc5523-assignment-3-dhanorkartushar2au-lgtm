@@ -1,14 +1,13 @@
-/* Named colours defined once (Week 7 pattern) */
+
 :root {
   --page-bg: #faf7f2;     /* warm off-white page background */
   --ink: #1f2937;         /* body text */
-  --heading: #16b9d3;     /* headings, links, navbar and title banner */
+  --heading: #0b5563;     /* headings, links, navbar and title banner */
   --accent: #b4400c;      /* link hover */
   --muted: #5b6470;       /* secondary text */
   --note-bg: #efe7da;     /* methods note background */
 }
 
-/* Readable page: soft background, dark text, comfortable line spacing */
 body {
   background-color: var(--page-bg);
   color: var(--ink);
@@ -66,4 +65,12 @@ header#quarto-header .navbar .navbar-toggler-icon {
   margin: 1.5rem 0;
   padding: 0.5rem 1rem;
   font-size: 0.95rem;
+}
+
+/* Search icon*/
+header#quarto-header #quarto-search .aa-DetachedSearchButton,
+header#quarto-header #quarto-search .aa-DetachedSearchButtonIcon,
+header#quarto-header #quarto-search .aa-SubmitIcon {
+  color: #ffffff;
+  fill: #ffffff;
 }
