@@ -1,0 +1,155 @@
+---
+title: "Fewer infections per patient, more harm per person: what Germany's hospitals reveal"
+description: "Hospital infection rates can improve while the harm to the population gets worse. A German study shows how."
+author: "Tushar Dhanorkar"
+date: "2026-10-04"
+categories: [health, data stories, R]
+bibliography: references.bib
+image: thumbnail.png
+execute:
+  echo: false
+  warning: false
+  message: false
+---
+
+::: finding
+Germany's hospitals infect fewer patients than the European average, yet Germany loses more healthy life to hospital infections: 308 years per 100,000 people, against 290 (2011–12 survey data).
+:::
+
+## The problem
+
+When a hospital reports its infection rate, it usually tells you how many *patients* got infected. That sounds like the right number to watch, but it may not be. A study of German hospitals found that Germany's hospitals have a **lower** infection rate among their patients than the European average, yet the country as a whole loses **more** healthy life to hospital infections. This post asks two questions:
+
+1.  **Does a lower infection rate per patient mean less harm to the population?**
+2.  **Are the most common infections the ones that do the most harm?**
+
+::: callout-note
+## Why this matters
+
+Infections caught in hospital are among the biggest avoidable harms in modern health care, and the study estimates that 20–30% of them are preventable [@zacher2019]. If we track the wrong number, a real rise in harm can go unnoticed while the number we track looks better.
+:::
+
+## The evidence
+
+To answer both questions, we need a way to compare infections of very different severity on one scale. The numbers come from \@zacher2019, who used two hospital surveys from 2011–2012. One covered 9,626 patients in 46 German hospitals chosen to represent the country. The other was a European survey of 273,753 patients in 1,149 hospitals. A hospital survey only shows who is infected on a single day, so the authors used an open-source R method to estimate how many infections happen in a whole year. They then converted those infections into a single measure of harm, the **DALY** (disability-adjusted life year), using models adapted from @cassini2016. One DALY is one year of healthy life lost, either to dying early or to living with illness. DALYs let a common but mild infection be compared fairly with a rare but deadly one.
+
+### Question 1: lower risk per patient, more harm per person
+
+Germany has an estimated **478,222** hospital infections a year, causing **16,245 deaths** and **248,920 years of healthy life lost**. Per 100,000 people, that is **308.2 DALYs in Germany against 290.0** for the EU/EEA average.
+
+The authors' explanation is volume, not poor hygiene. Germany has the most hospital beds in Europe and hospitalises a very large share of its population. A lower risk for each patient, spread over many more patients, still adds up to more harm per head of population.
+
+**So the answer to Question 1 is no.** A per-patient rate can improve while the harm to the population grows.
+
+### Where the extra harm sits
+
+The gap is not spread evenly. @fig-germany-eu shows that urinary tract infections and *Clostridioides difficile* (a gut infection) drive Germany's excess, while hospital-acquired pneumonia is actually lower than the European average.
+
+```{r}
+#| label: setup
+library(tidyverse)
+
+theme_set(
+  theme_minimal(base_size = 13) +
+    theme(
+      plot.background  = element_rect(fill = "#faf7f2", colour = NA),
+      panel.grid.minor = element_blank(),
+      plot.title.position = "plot",
+      text = element_text(colour = "#1f2937")
+    )
+)
+teal <- "#0b5563"; grey <- "#9aa3ad"
+```
+
+```{r}
+#| label: fig-germany-eu
+#| fig-cap: "Urinary tract and C. difficile infections drive Germany's excess burden; pneumonia runs below the European average. Burden is healthy years of life lost per 100,000 people per year. Values from Zacher et al. (2019). The two remaining infection types, which the study describes as close to the European average, are not shown."
+#| fig-alt: "Dot plot comparing Germany with the EU/EEA average for three infection types. Germany is higher for urinary tract infection (82.6 vs 57.1) and C. difficile (25.9 vs 10.0), and lower for pneumonia (86.1 vs 109.8)."
+#| fig-width: 7.5
+#| fig-height: 3.6
+gap <- tribble(
+  ~infection,                      ~Germany, ~`EU/EEA average`,
+  "Urinary tract infection",           82.6,  57.1,
+  "Clostridioides difficile",          25.9,  10.0,
+  "Hospital-acquired pneumonia",       86.1, 109.8
+) |>
+  pivot_longer(-infection, names_to = "who", values_to = "dalys") |>
+  mutate(infection = factor(infection,
+         levels = c("Hospital-acquired pneumonia", "Clostridioides difficile", "Urinary tract infection")))
+
+ggplot(gap, aes(dalys, infection)) +
+  geom_line(aes(group = infection), colour = "#c9c2b6", linewidth = 1.4) +
+  geom_point(aes(colour = who), size = 4.5) +
+  geom_text(aes(label = dalys, colour = who), nudge_y = 0.22, size = 3.8, show.legend = FALSE) +
+  scale_colour_manual(values = c(Germany = teal, `EU/EEA average` = grey), name = NULL) +
+  labs(x = "Years of healthy life lost per 100,000 people (per year)", y = NULL) +
+  theme(legend.position = "top", legend.justification = "left",
+        panel.grid.major.y = element_blank())
+```
+
+### Question 2: common is not the same as harmful
+
+Counting cases can also mislead. @tbl-burden ranks the five infection types by the harm they cause. Urinary tract infections are by far the most common, but they are usually mild: fewer than 2 in 100 cases lead to a death. Bloodstream infections are about an eighth as common but kill roughly 14 in 100 cases, so their burden is nearly as large.
+
+**So the answer to Question 2 is also no.** Ranking by number of cases and ranking by harm give different pictures.
+
+```{r}
+#| label: tbl-burden
+#| tbl-cap: "Annual burden of healthcare-associated infections in Germany, ordered by years of healthy life lost. The last column shows how dangerous each infection is when someone catches it. Source: Zacher et al. (2019), point estimates."
+burden <- tribble(
+  ~`Infection`,                    ~Cases, ~Deaths, ~DALYs,
+  "Hospital-acquired pneumonia",   106586,  3968,   69508,
+  "Urinary tract infection",       214150,  3664,   66701,
+  "Bloodstream infection",          26976,  3905,   58350,
+  "Surgical site infection",        93222,  2328,   28842,
+  "Clostridioides difficile",       36002,  1917,   20890
+) |>
+  mutate(`Deaths per 100 cases` = round(100 * Deaths / Cases, 1)) |>
+  rename(`Cases (per year)` = Cases, `Deaths (per year)` = Deaths,
+         `Healthy years lost (DALYs per year)` = DALYs)
+
+library(kableExtra)
+kbl(burden, format.args = list(big.mark = ","), align = "lrrrr") |>
+  kable_classic(full_width = FALSE, html_font = "Inter") |>
+  column_spec(1, bold = TRUE)
+```
+
+@fig-share shows the same point visually. For each infection, the grey dot is its share of all cases and the teal dot is its share of all the healthy life lost. Where the dots are far apart, case counts alone give a misleading picture.
+
+```{r}
+#| label: fig-share
+#| fig-cap: "Bloodstream infections are rare but cause a large share of the harm; urinary tract infections are the reverse. Shares are calculated from the five rows of the table above."
+#| fig-alt: "Dot plot for five infection types showing share of cases against share of years of healthy life lost. Urinary tract infection has 45% of cases but 27% of harm; bloodstream infection has 6% of cases but 24% of harm."
+#| fig-width: 7.5
+#| fig-height: 3.8
+shares <- burden |>
+  transmute(Infection,
+            `Share of cases`         = 100 * `Cases (per year)` / sum(`Cases (per year)`),
+            `Share of healthy life lost` = 100 * `Healthy years lost (DALYs per year)` / sum(`Healthy years lost (DALYs per year)`)) |>
+  mutate(Infection = fct_reorder(Infection, `Share of healthy life lost`))
+
+shares |>
+  pivot_longer(-Infection) |>
+  ggplot(aes(value, Infection)) +
+  geom_line(aes(group = Infection), colour = "#c9c2b6", linewidth = 1.4) +
+  geom_point(aes(colour = name), size = 4.5) +
+  geom_text(aes(label = paste0(round(value), "%"), colour = name),
+            nudge_y = 0.25, size = 3.6, show.legend = FALSE) +
+  scale_colour_manual(values = c(`Share of cases` = grey, `Share of healthy life lost` = teal), name = NULL) +
+  scale_x_continuous(labels = scales::label_percent(scale = 1)) +
+  labs(x = "Share of the five-infection total", y = NULL) +
+  theme(legend.position = "top", legend.justification = "left",
+        panel.grid.major.y = element_blank())
+```
+
+## How far to trust this
+
+::: methods-note
+These are modelled estimates, not head counts. The study says the research linking infections to deaths is thin and of moderate to low quality, which is why the original paper reports wide uncertainty ranges (for example, 10,863 to 22,756 deaths for the 16,245 estimate). The surveys also date from 2011–2012, so they describe hospitals as they were more than a decade ago, and the German and European surveys may not be perfectly comparable. Treat the numbers as showing the *pattern*, not as exact current counts.
+:::
+
+## Conclusion
+
+We asked two questions. First, does a lower infection rate per patient mean less harm to the population? No: Germany's patients are less likely to be infected than the European average, yet the country loses more healthy life (308.2 vs 290.0 years per 100,000 people) because it treats so many more people. Second, are the most common infections the most harmful? No: bloodstream infections are rare but account for nearly a quarter of the harm, while urinary tract infections are the most common but cause a smaller share. Urinary tract and *C. difficile* infections account for most of Germany's excess.
+
+For readers in Australia this matters now. The same method has already been applied to Australian data [@lydeamore2022], so the comparison can be made here. The practical lesson is simple: when you see an infection rate, ask whether it is counted **per patient** or **per population**, because the two can move in opposite directions.
