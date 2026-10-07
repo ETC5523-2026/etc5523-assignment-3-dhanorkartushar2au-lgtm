@@ -74,3 +74,7 @@ header#quarto-header #quarto-search .aa-SubmitIcon {
   color: #ffffff;
   fill: #ffffff;
 }
+/* Title banner heading: white so it reads on the teal banner */
+.quarto-title-banner .title {
+  color: #ffffff;
+}
