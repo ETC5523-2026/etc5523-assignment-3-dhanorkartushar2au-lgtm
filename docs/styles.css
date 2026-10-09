@@ -1,0 +1,80 @@
+
+:root {
+  --page-bg: #faf7f2;     /* warm off-white page background */
+  --ink: #1f2937;         /* body text */
+  --heading: #0b5563;     /* headings, links, navbar and title banner */
+  --accent: #b4400c;      /* link hover */
+  --muted: #5b6470;       /* secondary text */
+  --note-bg: #efe7da;     /* methods note background */
+}
+
+body {
+  background-color: var(--page-bg);
+  color: var(--ink);
+  line-height: 1.6;
+}
+
+/* Heading colour */
+h1, h2, h3, h4, .title {
+  color: var(--heading);
+}
+
+/* Links */
+a { color: var(--heading); }
+a:hover { color: var(--accent); }
+
+/* Navbar: teal bar with white text */
+header#quarto-header .navbar {
+  background-color: var(--heading);
+}
+header#quarto-header .navbar .navbar-brand,
+header#quarto-header .navbar .nav-link,
+header#quarto-header .navbar .bi {
+  color: #ffffff;
+}
+header#quarto-header .navbar .nav-link:hover {
+  color: #ffd9a8;
+}
+header#quarto-header .navbar .navbar-toggler-icon {
+  filter: invert(1);   /* keeps the mobile menu icon visible on teal */
+}
+
+/* Title banner (used on blog post and listing pages) */
+.quarto-title-banner {
+  background-color: var(--heading);
+}
+.quarto-title-banner,
+.quarto-title-banner * {
+  color: #ffffff;
+}
+
+/* Key result: the one thing that should attract attention */
+.finding {
+  border-left: 6px solid var(--heading);
+  background-color: #ffffff;
+  margin: 1.5rem 0;
+  padding: 0.5rem 1rem;
+  font-size: 1.1rem;
+}
+
+/* Methods and limitations: visible but secondary */
+.methods-note {
+  background-color: var(--note-bg);
+  color: var(--muted);
+  border-radius: 4px;
+  margin: 1.5rem 0;
+  padding: 0.5rem 1rem;
+  font-size: 0.95rem;
+}
+
+/* Search icon*/
+header#quarto-header #quarto-search .aa-DetachedSearchButton,
+header#quarto-header #quarto-search .aa-DetachedSearchButtonIcon,
+header#quarto-header #quarto-search .aa-SubmitIcon {
+  color: #ffffff;
+  fill: #ffffff;
+}
+/* Title banner heading: white so it reads on the teal banner */
+.quarto-title-banner .title {
+  color: #ffffff;
+}

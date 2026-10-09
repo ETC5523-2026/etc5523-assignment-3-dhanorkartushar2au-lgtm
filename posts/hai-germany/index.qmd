@@ -1,9 +1,9 @@
 ---
 title: "Fewer infections per patient, more harm per person: what Germany's hospitals reveal"
-description: "Hospital infection rates can improve while the harm to the population gets worse. A German study shows how."
+description: "A hospital can look safer on the number it usually reports and still cause more harm. Here's how."
 author: "Tushar Dhanorkar"
 date: "2026-10-04"
-categories: [health, data stories, R]
+categories: [health, data insights, R]
 bibliography: references.bib
 image: thumbnail.png
 execute:
@@ -12,38 +12,40 @@ execute:
   message: false
 ---
 
-::: finding
-Germany's hospitals infect fewer patients than the European average, yet Germany loses more healthy life to hospital infections: 308 years per 100,000 people, against 290 (2011–12 survey data).
+::: {.finding}
+Germany's hospitals infect fewer patients than the European average, yet the country loses more healthy life to those infections: 308 years per 100,000 people, against 290 across Europe (based on 2011 and 2012 surveys).
 :::
 
 ## The problem
 
-When a hospital reports its infection rate, it usually tells you how many *patients* got infected. That sounds like the right number to watch, but it may not be. A study of German hospitals found that Germany's hospitals have a **lower** infection rate among their patients than the European average, yet the country as a whole loses **more** healthy life to hospital infections. This post asks two questions:
+A hospital that reports a low infection rate sounds like a safe one. But the number most hospitals report is simply how many of their patients get infected, and that number can hide a bigger problem.
 
-1.  **Does a lower infection rate per patient mean less harm to the population?**
-2.  **Are the most common infections the ones that do the most harm?**
+A study of German hospitals found exactly this. Germany's patients are less likely to catch an infection than the European average. Yet across the whole country, Germany loses more healthy life to hospital infections than the EU does. This post asks two simple questions:
 
-::: callout-note
+1.  Does a lower infection rate per patient mean less harm to the population?
+2.  Are the most common infections the ones that do the most harm?
+
+::: {.callout-note}
 ## Why this matters
 
-Infections caught in hospital are among the biggest avoidable harms in modern health care, and the study estimates that 20–30% of them are preventable [@zacher2019]. If we track the wrong number, a real rise in harm can go unnoticed while the number we track looks better.
+Infections caught in hospital are one of the biggest avoidable harms in health care, and the study estimates that 20 to 30% of them could be prevented [@zacher2019]. If we watch the wrong number, the real harm can grow while the number we are watching still looks fine.
 :::
 
 ## The evidence
 
-To answer both questions, we need a way to compare infections of very different severity on one scale. The numbers come from \@zacher2019, who used two hospital surveys from 2011–2012. One covered 9,626 patients in 46 German hospitals chosen to represent the country. The other was a European survey of 273,753 patients in 1,149 hospitals. A hospital survey only shows who is infected on a single day, so the authors used an open-source R method to estimate how many infections happen in a whole year. They then converted those infections into a single measure of harm, the **DALY** (disability-adjusted life year), using models adapted from @cassini2016. One DALY is one year of healthy life lost, either to dying early or to living with illness. DALYs let a common but mild infection be compared fairly with a rare but deadly one.
+To answer both questions, we need a fair way to compare very different infections. A mild but common one has to be weighed against a rare but deadly one. The study [@zacher2019] does this with a measure called the DALY, or disability-adjusted life year. One DALY is one year of healthy life lost, either to an early death or to time spent ill. It lets us add up the harm from different infections on a single scale.
 
-### Question 1: lower risk per patient, more harm per person
+The figures come from two hospital surveys run in 2011 and 2012. One covered 9,626 patients in 46 German hospitals; the other covered 273,753 patients in 1,149 hospitals across Europe. A survey like this only shows who is infected on a single day, so the authors used an open-source R method to estimate how many infections happen over a whole year. They then turned those into DALYs using models from @cassini2016.
 
-Germany has an estimated **478,222** hospital infections a year, causing **16,245 deaths** and **248,920 years of healthy life lost**. Per 100,000 people, that is **308.2 DALYs in Germany against 290.0** for the EU/EEA average.
+### Safer per patient, yet more harm overall
 
-The authors' explanation is volume, not poor hygiene. Germany has the most hospital beds in Europe and hospitalises a very large share of its population. A lower risk for each patient, spread over many more patients, still adds up to more harm per head of population.
+In a single year, Germany has an estimated **478,222** hospital infections. These lead to **16,245 deaths** and **248,920 years of healthy life lost**. Per 100,000 people, that works out to **308.2 DALYs** in Germany, against **290.0** for the EU average.
 
-**So the answer to Question 1 is no.** A per-patient rate can improve while the harm to the population grows.
+The authors put this down to volume, not hygiene. Germany has more hospital beds than any other country in Europe, and it treats a very large share of its population. A smaller risk for each patient, spread across far more patients, still adds up to more harm overall. In other words, the gap is about scale, not standards.
 
-### Where the extra harm sits
+**So the answer to the first question is no.** The rate per patient can fall while the harm to the whole population rises.
 
-The gap is not spread evenly. @fig-germany-eu shows that urinary tract infections and *Clostridioides difficile* (a gut infection) drive Germany's excess, while hospital-acquired pneumonia is actually lower than the European average.
+The gap is not spread evenly, though. @fig-germany-eu shows where Germany runs ahead of the European average: urinary tract infections and *Clostridioides difficile*, a gut infection. For pneumonia, Germany is actually better than the EU.
 
 ```{r}
 #| label: setup
@@ -55,6 +57,7 @@ theme_set(
       plot.background  = element_rect(fill = "#faf7f2", colour = NA),
       panel.grid.minor = element_blank(),
       plot.title.position = "plot",
+      plot.title = element_text(face = "bold", size = 13, colour = "#0b5563"),
       text = element_text(colour = "#1f2937")
     )
 )
@@ -63,10 +66,10 @@ teal <- "#0b5563"; grey <- "#9aa3ad"
 
 ```{r}
 #| label: fig-germany-eu
-#| fig-cap: "Urinary tract and C. difficile infections drive Germany's excess burden; pneumonia runs below the European average. Burden is healthy years of life lost per 100,000 people per year. Values from Zacher et al. (2019). The two remaining infection types, which the study describes as close to the European average, are not shown."
-#| fig-alt: "Dot plot comparing Germany with the EU/EEA average for three infection types. Germany is higher for urinary tract infection (82.6 vs 57.1) and C. difficile (25.9 vs 10.0), and lower for pneumonia (86.1 vs 109.8)."
+#| fig-cap: "Years of healthy life lost per 100,000 people each year, Germany vs the EU/EEA average, for three infection types. Values from Zacher et al. (2019); the two infection types close to the European average are not shown."
+#| fig-alt: "Grouped bar chart comparing Germany with the EU/EEA average. Germany is higher for urinary tract infection (82.6 vs 57.1) and C. difficile (25.9 vs 10.0), and lower for hospital-acquired pneumonia (86.1 vs 109.8)."
 #| fig-width: 7.5
-#| fig-height: 3.6
+#| fig-height: 4.0
 gap <- tribble(
   ~infection,                      ~Germany, ~`EU/EEA average`,
   "Urinary tract infection",           82.6,  57.1,
@@ -77,25 +80,27 @@ gap <- tribble(
   mutate(infection = factor(infection,
          levels = c("Hospital-acquired pneumonia", "Clostridioides difficile", "Urinary tract infection")))
 
-ggplot(gap, aes(dalys, infection)) +
-  geom_line(aes(group = infection), colour = "#c9c2b6", linewidth = 1.4) +
-  geom_point(aes(colour = who), size = 4.5) +
-  geom_text(aes(label = dalys, colour = who), nudge_y = 0.22, size = 3.8, show.legend = FALSE) +
-  scale_colour_manual(values = c(Germany = teal, `EU/EEA average` = grey), name = NULL) +
-  labs(x = "Years of healthy life lost per 100,000 people (per year)", y = NULL) +
+ggplot(gap, aes(x = dalys, y = infection, fill = who)) +
+  geom_col(position = position_dodge(width = 0.7), width = 0.6) +
+  geom_text(aes(label = dalys), position = position_dodge(width = 0.7),
+            hjust = -0.2, size = 3.5, colour = "#1f2937") +
+  scale_fill_manual(values = c(Germany = teal, `EU/EEA average` = grey), name = NULL) +
+  scale_x_continuous(expand = expansion(mult = c(0, 0.15))) +
+  labs(title = "Germany's excess is in urinary and gut infections",
+       x = "Years of healthy life lost per 100,000 people (per year)", y = NULL) +
   theme(legend.position = "top", legend.justification = "left",
         panel.grid.major.y = element_blank())
 ```
 
-### Question 2: common is not the same as harmful
+### Common isn't the same as harmful
 
-Counting cases can also mislead. @tbl-burden ranks the five infection types by the harm they cause. Urinary tract infections are by far the most common, but they are usually mild: fewer than 2 in 100 cases lead to a death. Bloodstream infections are about an eighth as common but kill roughly 14 in 100 cases, so their burden is nearly as large.
+Counting cases can mislead too. @tbl-burden ranks the five infections by the harm they cause. Urinary tract infections are by far the most common, but they are usually mild. Fewer than 2 in 100 people who get one will die from it. Bloodstream infections are about eight times rarer, but they kill roughly 14 in 100, so they end up causing almost as much harm.
 
-**So the answer to Question 2 is also no.** Ranking by number of cases and ranking by harm give different pictures.
+**So the answer to the second question is also no.** The longest list of cases is not the longest list of harm.
 
 ```{r}
 #| label: tbl-burden
-#| tbl-cap: "Annual burden of healthcare-associated infections in Germany, ordered by years of healthy life lost. The last column shows how dangerous each infection is when someone catches it. Source: Zacher et al. (2019), point estimates."
+#| tbl-cap: "Annual burden of healthcare-associated infections in Germany, ordered by years of healthy life lost. The last column shows how dangerous each infection is once someone catches it. Source: Zacher et al. (2019), point estimates."
 burden <- tribble(
   ~`Infection`,                    ~Cases, ~Deaths, ~DALYs,
   "Hospital-acquired pneumonia",   106586,  3968,   69508,
@@ -114,42 +119,48 @@ kbl(burden, format.args = list(big.mark = ","), align = "lrrrr") |>
   column_spec(1, bold = TRUE)
 ```
 
-@fig-share shows the same point visually. For each infection, the grey dot is its share of all cases and the teal dot is its share of all the healthy life lost. Where the dots are far apart, case counts alone give a misleading picture.
+@fig-share shows this in one picture. For each infection, its share of all cases sits next to its share of all the harm. Where the two bars are far apart, counting cases alone gives the wrong impression.
 
 ```{r}
 #| label: fig-share
-#| fig-cap: "Bloodstream infections are rare but cause a large share of the harm; urinary tract infections are the reverse. Shares are calculated from the five rows of the table above."
-#| fig-alt: "Dot plot for five infection types showing share of cases against share of years of healthy life lost. Urinary tract infection has 45% of cases but 27% of harm; bloodstream infection has 6% of cases but 24% of harm."
+#| fig-cap: "Each infection's share of all cases next to its share of all the healthy life lost. Shares are calculated from the five rows of the table above."
+#| fig-alt: "Grouped bar chart for five infection types showing share of cases against share of harm. Urinary tract infection has 45% of cases but 27% of harm; bloodstream infection has 6% of cases but 24% of harm."
 #| fig-width: 7.5
-#| fig-height: 3.8
+#| fig-height: 4.4
 shares <- burden |>
   transmute(Infection,
-            `Share of cases`         = 100 * `Cases (per year)` / sum(`Cases (per year)`),
-            `Share of healthy life lost` = 100 * `Healthy years lost (DALYs per year)` / sum(`Healthy years lost (DALYs per year)`)) |>
-  mutate(Infection = fct_reorder(Infection, `Share of healthy life lost`))
+            `Share of cases` = 100 * `Cases (per year)` / sum(`Cases (per year)`),
+            `Share of harm`  = 100 * `Healthy years lost (DALYs per year)` / sum(`Healthy years lost (DALYs per year)`)) |>
+  mutate(Infection = fct_reorder(Infection, `Share of harm`))
 
 shares |>
-  pivot_longer(-Infection) |>
-  ggplot(aes(value, Infection)) +
-  geom_line(aes(group = Infection), colour = "#c9c2b6", linewidth = 1.4) +
-  geom_point(aes(colour = name), size = 4.5) +
-  geom_text(aes(label = paste0(round(value), "%"), colour = name),
-            nudge_y = 0.25, size = 3.6, show.legend = FALSE) +
-  scale_colour_manual(values = c(`Share of cases` = grey, `Share of healthy life lost` = teal), name = NULL) +
-  scale_x_continuous(labels = scales::label_percent(scale = 1)) +
-  labs(x = "Share of the five-infection total", y = NULL) +
+  pivot_longer(-Infection, names_to = "measure", values_to = "pct") |>
+  ggplot(aes(x = pct, y = Infection, fill = measure)) +
+  geom_col(position = position_dodge(width = 0.7), width = 0.6) +
+  geom_text(aes(label = paste0(round(pct), "%")), position = position_dodge(width = 0.7),
+            hjust = -0.2, size = 3.3, colour = "#1f2937") +
+  scale_fill_manual(values = c(`Share of cases` = grey, `Share of harm` = teal), name = NULL) +
+  scale_x_continuous(expand = expansion(mult = c(0, 0.15)), labels = scales::label_percent(scale = 1)) +
+  labs(title = "The most common infection isn't the most harmful",
+       x = "Share of the five-infection total", y = NULL) +
   theme(legend.position = "top", legend.justification = "left",
         panel.grid.major.y = element_blank())
 ```
 
 ## How far to trust this
 
-::: methods-note
-These are modelled estimates, not head counts. The study says the research linking infections to deaths is thin and of moderate to low quality, which is why the original paper reports wide uncertainty ranges (for example, 10,863 to 22,756 deaths for the 16,245 estimate). The surveys also date from 2011–2012, so they describe hospitals as they were more than a decade ago, and the German and European surveys may not be perfectly comparable. Treat the numbers as showing the *pattern*, not as exact current counts.
+::: {.methods-note}
+These are modelled estimates, not exact head counts. The study notes that the research linking infections to deaths is thin and of moderate to low quality, so the original paper gives wide ranges around its figures. The estimate of 16,245 deaths, for example, could be anywhere from about 10,863 to 22,756. The surveys are also from 2011 and 2012, so they show hospitals as they were more than a decade ago, and the two surveys may not be perfectly comparable. It is best to read these numbers as showing the overall pattern, not exact current counts.
 :::
 
 ## Conclusion
 
-We asked two questions. First, does a lower infection rate per patient mean less harm to the population? No: Germany's patients are less likely to be infected than the European average, yet the country loses more healthy life (308.2 vs 290.0 years per 100,000 people) because it treats so many more people. Second, are the most common infections the most harmful? No: bloodstream infections are rare but account for nearly a quarter of the harm, while urinary tract infections are the most common but cause a smaller share. Urinary tract and *C. difficile* infections account for most of Germany's excess.
+So, two questions and two surprising answers. First, a hospital system can look safer on the number it usually reports, infections per patient, and still cause more harm across the whole population, simply because it treats so many people (308.2 against 290.0 DALYs per 100,000). Second, the infections that fill the most beds are not the ones that do the most damage. Bloodstream infections are rare, but they account for almost a quarter of the harm. Urinary tract infections are the most common, but they cause a smaller share. Together, urinary tract and *C. difficile* infections drive most of Germany's excess.
 
-For readers in Australia this matters now. The same method has already been applied to Australian data [@lydeamore2022], so the comparison can be made here. The practical lesson is simple: when you see an infection rate, ask whether it is counted **per patient** or **per population**, because the two can move in opposite directions.
+The lesson carries over to us, too. The same method has already been used on Australian data [@lydeamore2022], so the same comparison can be made here. So next time you see an infection rate, ask yourself one simple question: is it counted per patient, or per population? The two can point in opposite directions.
+
+
+## References
+
+::: {#refs}
+:::
