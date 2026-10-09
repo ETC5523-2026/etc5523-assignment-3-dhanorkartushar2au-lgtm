@@ -12,4 +12,4 @@ The blog post is written for general readers who are interested in health or pub
 
 ## AI-use declaration
 
-I used Claude (Anthropic), a generative AI assistant, while preparing this assignment: to plan the structure of the blog post against the brief, to draft and revise the wording, to write and debug the R code for the figures and table, to create the website theme (`styles.css`), and to review the draft against the marking criteria. I checked every reported number against the original article (Zacher et al., 2019), revised the content myself, and take responsibility for all submitted work.
+I used ChatGPT as a helper along the way: to talk through the structure, to help draft and tidy the wording, to help write and debug the R code for the figures and table, to suggest the CSS theme, and to check my draft against the marking criteria. I reviewed and edited everything it produced, verified all the numbers
