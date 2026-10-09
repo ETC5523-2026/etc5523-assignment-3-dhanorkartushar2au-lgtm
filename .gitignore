@@ -1,0 +1,19 @@
+# R / RStudio
+.Rproj.user/
+.Rhistory
+.RData
+.Ruserdata
+
+# macOS
+.DS_Store
+
+# Quarto working cache
+/.quarto/
+
+# Stray render output (the real site is in docs/)
+/README.html
+/README_files/
+/posts/**/index.html
+/posts/**/index_files/
+
+**/*.quarto_ipynb
