@@ -6,6 +6,8 @@ date: "2026-10-04"
 categories: [health, data insights, R]
 bibliography: references.bib
 image: thumbnail.png
+toc: true
+toc-title: "On this page"
 execute:
   echo: false
   warning: false
