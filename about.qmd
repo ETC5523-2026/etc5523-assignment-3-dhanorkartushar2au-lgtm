@@ -1,13 +1,19 @@
 ---
 title: "About"
-image: profile.jpg
+image: My_profile.png
 about:
   template: jolla
   links:
     - icon: github
-      text: Github
-      href: https://github.com/etc5523-2022
-
+      text: GitHub
+      href: https://github.com/dhanorkartushar2au-lgtm
+    - icon: linkedin
+      text: LinkedIn
+      href: https://linkedin.com/in/tushardhanorkar
 ---
 
-This is a blog template for the ETC5523 Communicating with Data assessment at Monash University.
+My name is Tushar Dhanorkar, a Master of Business Analytics student at Monash University in Melbourne. I'm interested in turning data into clear stories that help people make decisions, using R, Python and Quarto.
+
+Before moving to Australia, I worked for about two years as a consultant and Project Manager in Pune, India. That work taught me how much of analytics is explaining findings to people who don't want technical detail. I also hold a B.Tech and a PG-DAC diploma in computing.
+
+This site collects my data stories. The first post turns a university assignment on hospital infections into a plain-language article for general readers.
